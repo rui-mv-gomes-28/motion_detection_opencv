@@ -8,7 +8,7 @@ then need to improve this in case of walking camera. Right now, it will break be
 '''
 import cv2 as cv
 
-video_path = "cars.mp4"
+video_path = "traffic.mp4"
 
 cap = cv.VideoCapture(video_path)
 
@@ -39,7 +39,7 @@ while True:
     # Apply erosion
     mask_eroded = cv.morphologyEx(mask_thresh, cv.MORPH_OPEN, kernel)
     
-    min_contour_area = 300  # Define your minimum area threshold
+    min_contour_area = 100  # Define your minimum area threshold
     large_contours = [cnt for cnt in contours if cv.contourArea(cnt) > min_contour_area]
     
     frame_out = frame.copy()
@@ -48,7 +48,8 @@ while True:
         frame_out = cv.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 200), 3)
     
     # Display the resulting frame
-    cv.imshow('Frame_final', frame_out)    
+    cv.imshow('Test', mask_thresh)    
+    cv.imshow('Final frame', frame_out)    
     
     if cv.waitKey(25) & 0XFF == ord('q'):
         break

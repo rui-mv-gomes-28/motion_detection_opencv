@@ -1,11 +1,14 @@
 '''
 Motion detection for moving camera
 
+look at this
+https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780
+
 '''
 import numpy as np
 import cv2
 
-video_path = "cars.mp4"
+video_path = "drone.mp4"
 
 cap = cv2.VideoCapture(video_path)
 
@@ -52,7 +55,14 @@ while True:
     pts2 = np.float32([kp2[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
     
     # Find homography
-    H, mask = cv2.findHomography(pts1, pts2, cv2.RANSAC, 10.0)
+    # H, mask = cv2.findHomography(pts1, pts2, cv2.RANSAC, 10.0)
+    '''
+    0 - a regular method using all the points, i.e., the least squares method
+    RANSAC - RANSAC-based robust method
+    LMEDS - Least-Median robust method
+    RHO - PROSAC-based robust method
+    '''
+    H, mask = cv2.findHomography(pts1, pts2, cv2.RHO, 1.0)
     
     # Warp current frame
     height, width = frame.shape[:2]
@@ -69,7 +79,7 @@ while True:
             cv2.rectangle(stabilized_frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
     
     # Display the original frame, stabilized frame, and the foreground mask
-    # cv2.imshow('Original Frame', frame)
+    # cv2.imshow('Test window', fgMask)
     cv2.imshow('Stabilized Frame', stabilized_frame)
     cv2.imshow('Foreground Mask', fgMask)
     
